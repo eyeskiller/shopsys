@@ -1,5 +1,5 @@
 # Product Searching via Elasticsearch
-To provide the best possible performance, frontend product searching and autocomplete
+To provide the best possible performance, frontend product searching, filtering and autocomplete
 leverages [Elasticsearch technology](https://www.elastic.co/products/elasticsearch).
 Elasticsearch is a super fast no-SQL database where data are stored in JSON format as so-called [documents](https://www.elastic.co/guide/en/elasticsearch/reference/current/_basic_concepts.html#_document) in one or more [indexes](https://www.elastic.co/guide/en/elasticsearch/reference/current/_basic_concepts.html#_index).
 
@@ -23,16 +23,24 @@ that are located in `src/Shopsys/ShopBundle/Resources/definition/` directory in 
 The directory is configured using `%shopsys.elasticsearch.structure_dir%` parameter.
 
 ### Product data export
-No data are automaticly stored in Elasticsearch by "itself". When you store data into a relational database, they are not stored in Elasticsearch.
+No data are automatically stored in Elasticsearch by "itself". When you store data into a relational database, they are not stored in Elasticsearch.
 You have to export data from database into Elasticsearch actively.
 
-Following product attributes are exported into Elasticsearch (i.e. the search is performed on these fields only):
+Following product attributes are exported into Elasticsearch (i.e. the search or filtering can be performed on these fields only):
 * name
 * catnum
 * partno
 * ean
 * description
 * short description
+* flags
+* brand
+* categories
+* prices
+* in_stock
+* parameters
+* ordering_priority
+* calculated_selling_denied
 
 Data of all products are exported into Elasticsearch by CRON module (`ProductSearchExportCronModule.php`) once an hour.
 Alternatively, you can force the export manually using `product-search-export-products` phing target.
@@ -60,6 +68,21 @@ But if we simplify, we can say that the search term is searched in attributes an
 The searched fields and their priority are defined directly in the `Shopsys\FrameworkBundle\Model\Product\Search\ProductElasticsearchRepository::createQuery()` function.
 
 If you want to improve searching, you can learn more in [Elasticsearch analysis](https://www.elastic.co/guide/en/elasticsearch/reference/current/analysis.html).
+
+### Product filtering
+
+Products can be by default filtered by price, flags, brand, parameters and in stock availability.
+
+Behavior of filter is defined in `Shopsys\FrameworkBundle\Model\Product\ProductOnCurrentDomainElasticFacade::getPaginatedProductsInCategory()` and
+`Shopsys\FrameworkBundle\Model\Product\ProductOnCurrentDomainElasticFacade::getPaginatedProductsForSearch()` methods.  
+Both of them internally use protected method `Shopsys\FrameworkBundle\Model\Product\ProductOnCurrentDomainElasticFacade::createFilterQueryWithProductFilterData()` to prepare proper query for Elasticsearch.
+
+Elasticsearch return sorted list of product IDs and products itself are loaded from PostgreSQL.
+
+Aggregation numbers are counted with help of Elasticsearch too thanks to methods `Shopsys\FrameworkBundle\Model\Product\ProductOnCurrentDomainElasticFacade::getProductFilterCountDataInCategory` and
+`Shopsys\FrameworkBundle\Model\Product\ProductOnCurrentDomainElasticFacade::getProductFilterCountDataForSearch`.
+
+List of choices (exact parameters, brands, flags) is loaded from PostgreSQL as there is no benefit from loading them from Elasticsearch.
 
 ## Where does Elasticsearch run?
 When using docker installation, Elasticsearch API is available on the address [http://127.0.0.1:9200](http://127.0.0.1:9200).
