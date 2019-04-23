@@ -62,47 +62,6 @@ monolog:
       path: "%kernel.logs_dir%/%kernel.environment%.cron.log"
 ```
 
-### 3. Install dependencies and configure parameters
-Composer will prompt you to set main parameters (`app/config/parameters.yml`):
-
-| Name                                     | Description                                                                   | Default value  |
-| ---------------------------------        | ----------------------------------------------------------------------------- | -------------- |
-| `database_host`                          | access data of your PostgreSQL database                                       | 127.0.0.1      |
-| `database_port`                          | ...                                                                           | 5432           |
-| `database_name`                          | ...                                                                           | shopsys        |
-| `database_user`                          | ...                                                                           | postgres       |
-| `database_password`                      | ...                                                                           | ...            |
-| `database_server_version`                | version of your PostgreSQL server                                             | 10.5           |
-| `elasticsearch_host`                     | host of your Elasticsearch                                                    | 127.0.0.1:9200 |
-| `redis_host`                             | host of your Redis storage (credentials are not supported right now)          | 127.0.0.1      |
-| `mailer_transport`                       | access data of your mail server                                               | ...            |
-| `mailer_host`                            | ...                                                                           | ...            |
-| `mailer_user`                            | ...                                                                           | ...            |
-| `mailer_password`                        | ...                                                                           | ...            |
-| `mailer_disable_delivery`                | set to `true` if you don't want to send any e-mails                           | ...            |
-| `mailer_master_email_address`            | set if you want to send all e-mails to one address (useful for development)   | ...            |
-| `mailer_delivery_whitelist`              | set if you want to have master e-mail but allow sending to specific addresses | ...            |
-| `secret`                                 | randomly generated secret token                                               | ...            |
-| `trusted_proxies`                        | proxies that are trusted to pass traffic, used mainly for production          | [127.0.0.1]    |
-
-Composer will then prompt you to set parameters for testing environment (`app/config/parameters_test.yml`):
-
-| Name                              | Description                                                                   | Default value |
-| --------------------------------- | ----------------------------------------------------------------------------- | ------------- |
-| `test_database_host`              | access data of your PostgreSQL database for tests                             | 127.0.0.1     |
-| `test_database_port`              | ...                                                                           | 5432          |
-| `test_database_name`              | ...                                                                           | shopsys-test  |
-| `test_database_user`              | ...                                                                           | postgres      |
-| `test_database_password`          | ...                                                                           | ...           |
-| `overwrite_domain_url`            | overwrites URL of all domains for acceptance testing (set to `~` to disable)  | ~             |
-| `selenium_server_host`            | with native installation the selenium server is on `localhost`                | 127.0.0.1     |
-| `test_mailer_transport`           | access data of your mail server for tests                                     | ...           |
-| `test_mailer_host`                | ...                                                                           | ...           |
-| `test_mailer_user`                | ...                                                                           | ...           |
-| `test_mailer_password`            | ...                                                                           | ...           |
-| `shopsys.content_dir_name`        | web/content-test/ directory is used instead of web/content/ during the tests  | content-test  |
-
-
 ### 4. Create databases
 ```
 php phing db-create
