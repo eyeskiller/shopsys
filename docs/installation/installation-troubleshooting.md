@@ -21,7 +21,7 @@ psql --username postgres --dbname <test_database_name> --command "ALTER SCHEMA p
 Error message:
 ```
 [Shopsys\FrameworkBundle\Command\Exception\MissingLocaleException]  
-It looks like your operating system does not support locale "cs_CZ.utf8". Please visit docs/installation/native-installation.md#troubleshooting for more details.
+It looks like your operating system does not support locale "cs_CZ.utf8". Please visit docs/installation/installation-troubleshooting.md for more details.
 
 [Doctrine\DBAL\Exception\DriverException]  
 An exception occurred while executing 'CREATE COLLATION pg_catalog."cs_CZ" (LOCALE="cs_CZ"."utf8")':  
@@ -88,7 +88,7 @@ monolog:
 When `composer install` or `composer update` fails on an error with exceeding the allowed memory size, you can increase the memory limit by setting `COMPOSER_MEMORY_LIMIT`.
 
 ## There is not possible to create, copy, move or remove files on local filesystem (Windows like filesystems)
-When there is not possible to do some operations with files withing labeled local filesystem (`C:`, `D:`, ...), the problem could be solved by removing label part from the path to the files.
+When there is not possible to do some operations with files withing labeled local filesystem (`C:`, `D:`, ...), the problem could be solved by removing label part from the path to the files using `TransformString::removeDriveLetterFromPath` method.
 
 ## Still struggling with installation?
 If you encountered any other problem during the installation please [file an issue](https://github.com/shopsys/shopsys/issues/new) and we will help you.
