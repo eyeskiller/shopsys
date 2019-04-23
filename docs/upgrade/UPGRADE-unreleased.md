@@ -62,7 +62,39 @@ There you can find links to upgrade notes for other versions too.
     - read the section about proxying the URL content subpaths via webserver domain [`docs/introduction/abstract-filesystem.md`](https://github.com/shopsys/shopsys/blob/master/docs/introduction/abstract-filesystem.md)
 - to be more descriptive about error caused by active TEST environment ([#701](https://github.com/shopsys/shopsys/pull/701))
     - modify `ErrorController::createUnableToResolveDomainResponse()` by these [changes](https://github.com/shopsys/shopsys/pull/701/files#diff-0b1aecbf82624ce474ca3cb8bd75811c).
-
+- start filtering products with elasticsearch ([#943](https://github.com/shopsys/shopsys/pull/943))
+    - copy enhanced structure files from [GitHub](https://github.com/shopsys/project-base/blob/master/src/Shopsys/ShopBundle/Resources/definition-with-filter/products/) to `src/Shopsys/ShopBundle/Resources/definition-with-filter/products/` folder in your project (create `definition-with-filter` folder)
+    - set elasticsearch structure files directory in `app/config/paths.yml`
+        ```diff
+        -   shopsys.elasticsearch.structure_dir: '%shopsys.resources_dir%/definition/'
+        +   shopsys.elasticsearch.structure_dir: '%shopsys.resources_dir%/definition-with-filter/'
+        ```
+    - replace class `Shopsys\FrameworkBundle\Model\Product\ProductOnCurrentDomainFacade` with the interface `Shopsys\FrameworkBundle\Model\Product\ProductOnCurrentDomainFacadeInterface` in
+        - `src/Shopsys/ShopBundle/Controller/Front/ProductController.php`
+        - `src/Shopsys/ShopBundle/Controller/Front/SearchController.php`
+    - add service definition for facade interface to your `services.yml` like `Shopsys\FrameworkBundle\Model\Product\ProductOnCurrentDomainFacadeInterface: '@Shopsys\FrameworkBundle\Model\Product\ProductOnCurrentDomainElasticFacade'`
+    - add following alias to `services.yml` and `services_test.yml`
+        ```yaml
+        Shopsys\FrameworkBundle\Model\Product\Search\Export\ProductSearchExportRepository:
+            alias: Shopsys\FrameworkBundle\Model\Product\Search\Export\ProductSearchExportWithFilterRepository
+        ```
+    - update test of export repository `tests/ShopBundle/Functional/Model/Product/Search/ProductSearchExportRepositoryTest.php` to match the new Elasticsearch structure
+        you can copy test from [GitHub](https://github.com/shopsys/project-base/blob/master/tests/ShopBundle/Functional/Model/Product/Search/ProductSearchExportRepositoryTest.php)
+    - in order to have your code properly tested, copy following tests from [GitHub](https://github.com/shopsys/project-base/blob/master/tests/ShopBundle/Functional/Model/Product) to your project
+        - `ProductOnCurrentDomainFacadeTest.php`
+        - `ProductOnCurrentDomainElasticFacadeTest.php`
+        - `ProductOnCurrentDomainSqlFacadeTest.php`
+        - `ProductOnCurrentDomainFacadeCountDataTest.php`
+        - `ProductOnCurrentDomainElasticFacadeCountDataTest.php`
+        - `ProductOnCurrentDomainSqlFacadeCountDataTest.php`
+        - `Filter/BrandFilterChoiceRepositoryTest.php`
+        - `Filter/FlagFilterChoiceRepositoryTest.php`
+        - `Filter/ParameterFilterChoiceRepositoryTest.php`
+        - `Search/FilterQueryTest.php`
+    - skip path `'*/tests/ShopBundle/Functional/Model/Product/ProductOnCurrentDomainFacadeCountDataTest.php'` for following coding standard sniffs in your `easy-coding-standard.yml` file
+        `ObjectCalisthenics\Sniffs\Files\FunctionLengthSniff`
+        `ObjectCalisthenics\Sniffs\Files\ClassTraitAndInterfaceLengthSniff`
+    - don't forget to recreate elasticsearch structure and export products (`./phing product-search-recreate-structure product-search-export-products`)
 
 ### Configuration
  - use standard format for redis prefixes ([#928](https://github.com/shopsys/shopsys/pull/928))
