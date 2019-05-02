@@ -31,13 +31,13 @@ After you read the articles you are ready to start with the creating and buildin
 ### Create new project from Shopsys Framework sources
 
 ```
-COMPOSER_MEMORY_LIMIT=-1 composer create-project shopsys/project-base --keep-vcs
+php -d memory_limit=-1 <PATH TO COMPOSER or COMPOSER.PHAR> create-project shopsys/project-base --keep-vcs
 cd project-base
 ```
 
 *Notes:*
 - *The `--keep-vcs` option initializes GIT repository in your project folder that is needed for diff commands of the application build and keeps the GIT history of `shopsys/project-base`.*
-- *Since `v7.0.0-beta4` we have set the Composer memory limit to `-1` because of the increased memory consumption during the dependencies calculation.*
+- *Since `v7.0.0-beta4` we have set memory limit to `-1` for composer because of the increased memory consumption during the dependencies calculation.*
 - *During the execution of `composer create-project`, there will be installed 3-rd party software as dependencies of Shopsys Framework by [composer](https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies) with licenses that are described in document [Open Source License Acknowledgements and Third-Party Copyrights](../../open-source-license-acknowledgements-and-third-party-copyrights.md)*
 
 ### Create databases
