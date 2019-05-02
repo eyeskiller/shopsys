@@ -6,7 +6,7 @@ php:
 cache:
   directories:
     - ~/.composer/cache
-    - $HOME/.npm
+    - ~/.npm
 
 env:
   - ELASTIC_SEARCH_INDEX_PREFIX=""
