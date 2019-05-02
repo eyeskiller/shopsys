@@ -10,6 +10,7 @@ cache:
 
 env:
   - ELASTIC_SEARCH_INDEX_PREFIX=""
+  - COMPOSER_MEMORY_LIMIT=-1
 
 before_install:
   - echo "extension = redis.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
@@ -17,7 +18,7 @@ before_install:
   - composer global require hirak/prestissimo
 
 install:
-  - COMPOSER_MEMORY_LIMIT=-1 travis_retry composer install --optimize-autoloader --no-interaction --no-progress --dev
+  - composer install --optimize-autoloader --no-interaction --no-progress --dev
   - php phing npm
 
 script:
