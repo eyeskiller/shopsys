@@ -63,12 +63,7 @@ There you can find links to upgrade notes for other versions too.
 - to be more descriptive about error caused by active TEST environment ([#701](https://github.com/shopsys/shopsys/pull/701))
     - modify `ErrorController::createUnableToResolveDomainResponse()` by these [changes](https://github.com/shopsys/shopsys/pull/701/files#diff-0b1aecbf82624ce474ca3cb8bd75811c).
 - start filtering products with elasticsearch ([#943](https://github.com/shopsys/shopsys/pull/943))
-    - copy enhanced structure files from [GitHub](https://github.com/shopsys/project-base/blob/master/src/Shopsys/ShopBundle/Resources/definition-with-filter/products/) to `src/Shopsys/ShopBundle/Resources/definition-with-filter/products/` folder in your project (create `definition-with-filter` folder)
-    - set elasticsearch structure files directory in `app/config/paths.yml`
-        ```diff
-        -   shopsys.elasticsearch.structure_dir: '%shopsys.resources_dir%/definition/'
-        +   shopsys.elasticsearch.structure_dir: '%shopsys.resources_dir%/definition-with-filter/'
-        ```
+    - replace Elasticsearch structure files in `src/Shopsys/ShopBundle/Resources/definition/products/` folder in your project with new ones from [GitHub](https://github.com/shopsys/project-base/blob/master/src/Shopsys/ShopBundle/Resources/definition/products/)
     - replace class `Shopsys\FrameworkBundle\Model\Product\ProductOnCurrentDomainFacade` with the interface `Shopsys\FrameworkBundle\Model\Product\ProductOnCurrentDomainFacadeInterface` in
         - `src/Shopsys/ShopBundle/Controller/Front/ProductController.php`
         - `src/Shopsys/ShopBundle/Controller/Front/SearchController.php`
