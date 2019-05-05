@@ -186,6 +186,28 @@ There you can find links to upgrade notes for other versions too.
         +    - -c
         +    - config_file=/var/lib/postgresql/data/postgresql.conf
         ```
+- create configuration file for your crons in your project base ([#989](https://github.com/shopsys/shopsys/pull/989))
+    - create new file `src/ShopBundle/Resources/config/services/cron.yml` with following code:
+        ```
+        services:
+            _defaults:
+                autowire: true
+                autoconfigure: true
+                public: false
+
+        #   Example:
+        #   Shopsys\FrameworkBundle\Model\Product\Search\Export\ProductSearchExportCronModule:
+        #       tags:
+        #           - { name: shopsys.cron, hours: '*', minutes: '*' }
+        ```
+    - update `src/Shopsys/ShopBundle/Resources/config/services.yml`:
+        ```diff
+        imports:
+            - { resource: forms.yml }
+            - { resource: services/commands.yml }
+            - { resource: services/data_fixtures.yml }
+        +   - { resource: services/cron.yml }
+        ```
 
 [Upgrade from v7.1.0 to Unreleased]: https://github.com/shopsys/shopsys/compare/v7.1.0...HEAD
 [shopsys/framework]: https://github.com/shopsys/framework
