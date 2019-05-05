@@ -33,17 +33,17 @@ Following product attributes are exported into Elasticsearch (i.e. the search or
 * ean
 * description
 * short description
-* flags
-* brand
-* categories
-* prices
-* in_stock
-* parameters
-* ordering_priority
-* calculated_selling_denied
+* flags (IDs of assigned flags)
+* brand (ID of assigned brand)
+* categories (IDs of assigned categories)
+* prices (all the prices for all pricing groups)
+* in_stock (true/false value whether the product is in stock)
+* parameters (a pairs of parameter IDs and parameter value IDs)
+* ordering_priority (priority number)
+* calculated_selling_denied (true/false value whether the product is already sold out)
 
 Data of all products are exported into Elasticsearch by CRON module (`ProductSearchExportCronModule.php`) once an hour.
-Alternatively, you can force the export manually using `product-search-export-products` phing target.
+Alternatively, you can force the export manually using `product-search-export-products` Phing target.
 
 ### Searching for products
 
@@ -65,7 +65,8 @@ But if we simplify, we can say that the search term is searched in attributes an
 * short description - match anywhere
 * description - match anywhere
 
-The searched fields and their priority are defined directly in the `Shopsys\FrameworkBundle\Model\Product\Search\ProductElasticsearchRepository::createQuery()` function.
+The searched fields and their priority are defined directly in the `Shopsys\FrameworkBundle\Model\Product\Search\FilterQuery::search()` method.  
+This method can be easily changed by extending `FilterQuery` class.
 
 If you want to improve searching, you can learn more in [Elasticsearch analysis](https://www.elastic.co/guide/en/elasticsearch/reference/current/analysis.html).
 
@@ -75,7 +76,7 @@ Products can be by default filtered by price, flags, brand, parameters and in st
 
 Behavior of filter is defined in `Shopsys\FrameworkBundle\Model\Product\ProductOnCurrentDomainElasticFacade::getPaginatedProductsInCategory()` and
 `Shopsys\FrameworkBundle\Model\Product\ProductOnCurrentDomainElasticFacade::getPaginatedProductsForSearch()` methods.  
-Both of them internally use protected method `Shopsys\FrameworkBundle\Model\Product\ProductOnCurrentDomainElasticFacade::createFilterQueryWithProductFilterData()` to prepare proper query for Elasticsearch.
+Each internally uses their own factory method `createProducts*FilterQuery` to create `Shopsys\FrameworkBundle\Model\Product\Search\FilterQuery` object that represents the query for Elasticsearch.
 
 Elasticsearch return sorted list of product IDs and products itself are loaded from PostgreSQL.
 
@@ -84,6 +85,20 @@ Aggregation numbers are counted with help of Elasticsearch too thanks to methods
 
 List of choices (exact parameters, brands, flags) is loaded from PostgreSQL as there is no benefit from loading them from Elasticsearch.
 
+## Implementation
+
+`ProductController` and `SearchController` uses `Shopsys\FrameworkBundle\Model\Product\ProductOnCurrentDomainFacadeInterface` to get filtered products.
+
+Currently there are two implementations of `Shopsys\FrameworkBundle\Model\Product\ProductOnCurrentDomainFacadeInterface`:
+ - `ProductOnCurrentDomainFacade`
+    - filters data through SQL
+    - slower than Elasticsearch, but on the other hand can be used easily on more complex pricing models (for example exact price is calculated with SQL function)
+ - `ProductOnCurrentDomainElasticFacade`
+    - filters data through Elasticsearch
+    - much faster than filtering through SQL and remain fast independently of the number of selected filters
+
+Class used can be easily changed in `services.yml` file in your project.
+
 ## Where does Elasticsearch run?
 When using docker installation, Elasticsearch API is available on the address [http://127.0.0.1:9200](http://127.0.0.1:9200).
 
@@ -91,7 +106,7 @@ When using docker installation, Elasticsearch API is available on the address [h
 If you wish to reconfigure the indexes setting, simply change the JSON configurations in `src/Shopsys/ShopBundle/Resources/Resources/definition/`.
 Configurations use the `<index>/<domain_id>.json` naming pattern.
 
-If you need to change the data that are exported into Elasticsearch, overwrite appropriate methods in `ProductSearchExportRepository` and `ProductElasticsearchConverter` classes.
+If you need to change the data that are exported into Elasticsearch, overwrite appropriate methods in `ProductSearchExportWithFilterRepository` and `ProductElasticsearchConverter` classes.
 
 You can also change the searching behavior by overwriting product search, specifically `ProductElasticsearchRepository` class.
 
