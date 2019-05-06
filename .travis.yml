@@ -66,6 +66,6 @@ jobs:
           --add-host elasticsearch:127.0.0.1
           --add-host redis:127.0.0.1
           --network=host
-          --name=php-fpm php-fpm
+          --name=php-fpm php-fpm bash
         - docker ps -a
         - docker exec -d php-fpm nohup php -S webserver:8080
