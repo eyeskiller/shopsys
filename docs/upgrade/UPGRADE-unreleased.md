@@ -63,11 +63,14 @@ There you can find links to upgrade notes for other versions too.
 - to be more descriptive about error caused by active TEST environment ([#701](https://github.com/shopsys/shopsys/pull/701))
     - modify `ErrorController::createUnableToResolveDomainResponse()` by these [changes](https://github.com/shopsys/shopsys/pull/701/files#diff-0b1aecbf82624ce474ca3cb8bd75811c).
 - start filtering products with elasticsearch ([#943](https://github.com/shopsys/shopsys/pull/943))
-    - replace Elasticsearch structure files in `src/Shopsys/ShopBundle/Resources/definition/products/` folder in your project with new ones from [GitHub](https://github.com/shopsys/project-base/blob/master/src/Shopsys/ShopBundle/Resources/definition/products/)
+    - replace Elasticsearch structure files in `src/Shopsys/ShopBundle/Resources/definition/products/` folder in your project with new ones from [GitHub](https://github.com/shopsys/project-base/blob/master/src/Shopsys/ShopBundle/Resources/definition/product/)
     - replace class `Shopsys\FrameworkBundle\Model\Product\ProductOnCurrentDomainFacade` with the interface `Shopsys\FrameworkBundle\Model\Product\ProductOnCurrentDomainFacadeInterface` in
         - `src/Shopsys/ShopBundle/Controller/Front/ProductController.php`
         - `src/Shopsys/ShopBundle/Controller/Front/SearchController.php`
-    - add service definition for facade interface to your `services.yml` like `Shopsys\FrameworkBundle\Model\Product\ProductOnCurrentDomainFacadeInterface: '@Shopsys\FrameworkBundle\Model\Product\ProductOnCurrentDomainElasticFacade'`
+    - add service definition for facade interface to your `services.yml` like 
+        ```yaml
+        Shopsys\FrameworkBundle\Model\Product\ProductOnCurrentDomainFacadeInterface: '@Shopsys\FrameworkBundle\Model\Product\ProductOnCurrentDomainElasticFacade'
+        ```
     - add following alias to `services.yml` and `services_test.yml`
         ```yaml
         Shopsys\FrameworkBundle\Model\Product\Search\Export\ProductSearchExportRepository:
