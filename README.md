@@ -64,7 +64,7 @@ which is fully ready as the base for building your Shopsys Framework project.
 
 For more detailed instructions, follow one of the installation guides:
 
-* [Local Installation](docs/installation/local-installation.md)
+* [Installation Guide](docs/installation/installation-guide.md)
 * [Deployment to Google Cloud](docs/kubernetes/how-to-deploy-ssfw-to-google-cloud-platform.md)
 * [Installation on production server](docs/installation/installation-using-docker-on-production-server.md)
 
