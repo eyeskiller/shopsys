@@ -61,11 +61,11 @@ jobs:
     - name: Acceptance tests
       script:
         - docker run -d --network=host --name selenium-server selenium/standalone-chrome:3.11
-        - docker run --privileged -it
+        - docker run -d
           --add-host postgres:127.0.0.1
           --add-host elasticsearch:127.0.0.1
           --add-host redis:127.0.0.1
           --network=host
-          --name=php-fpm php-fpm bash
+          --name=php-fpm php-fpm
         - docker ps -a
         - docker exec -d php-fpm nohup php -S webserver:8080
